@@ -20,7 +20,7 @@ export class UserController {
   constructor(private readonly _userService: UserService) {}
 
   @Get()
-  get(): UserEntity[] {
+  getAll(): UserEntity[] {
     return this._userService.getAll();
   }
 

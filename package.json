@@ -1,10 +1,10 @@
 {
   "name": "home-library",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Home Library Service based on Nest.js",
+  "author": "Daniil Tatarinov",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prebuild": "rimraf dist",
     "build": "nest build",
