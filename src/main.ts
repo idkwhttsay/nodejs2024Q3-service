@@ -1,11 +1,14 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import * as process from 'node:process';
+import { ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const PORT: number = Number.parseInt(process.env.PORT) | 4000;
-  console.log(PORT);
   const app = await NestFactory.create(AppModule);
-  await app.listen(PORT);
+  app.useGlobalPipes(new ValidationPipe());
+  await app.listen(PORT).then(() => {
+    console.log('app is listening on http://localhost:4000');
+  });
 }
+
 bootstrap();
