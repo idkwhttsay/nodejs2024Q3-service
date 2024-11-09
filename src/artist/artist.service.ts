@@ -3,12 +3,16 @@ import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import CreateArtistDto from './dtos/createArtist.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateArtistDto from './dtos/updateArtist.dto';
+import TrackEntity from '../track/entities/track.entity';
+import { TrackService } from '../track/track.service';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @Inject('ARTIST_DB')
     private readonly _artistDatabase: Map<string, ArtistEntity>,
+    @Inject('TRACK_DB')
+    private readonly _trackDatabase: Map<string, TrackEntity>,
   ) {}
 
   getAll(): ArtistEntity[] {
@@ -59,6 +63,13 @@ export class ArtistService {
     if (value === undefined) {
       throw new NotFoundException();
     }
+
+    this._trackDatabase.forEach((value: TrackEntity, key: string) => {
+      if (value.artistId === id) {
+        value.artistId = null;
+        this._trackDatabase.set(key, value);
+      }
+    });
 
     this._artistDatabase.delete(id);
   }
