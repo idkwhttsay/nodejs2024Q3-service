@@ -13,7 +13,7 @@ export class TrackService {
     return Array.from(this._trackDatabase.values());
   }
 
-  getTrackById(id: string) {
+  getTrackById(id: string): TrackEntity {
     const value: TrackEntity = this._trackDatabase.get(id);
 
     if (value === undefined) {
@@ -23,50 +23,57 @@ export class TrackService {
     return value;
   }
 
-  createTrack(createTrackDto: CreateTrackDto): TrackEntity {
-    console.log(createTrackDto);
-
+  createTrack(dto: CreateTrackDto): TrackEntity {
     const track: TrackEntity = new TrackEntity({
       id: uuid(),
-      name: createTrackDto.name,
-      albumId: createTrackDto.albumId || null,
-      artistId: createTrackDto.artistId || null,
-      duration: createTrackDto.duration,
+      name: dto.name,
+      albumId: dto.albumId || null,
+      artistId: dto.artistId || null,
+      duration: dto.duration,
     });
 
     this._trackDatabase.set(track.id, track);
     return track;
   }
 
-  updateTrack(id: string, updateTrackDto: UpdateTrackDto) {
+  updateTrack(id: string, dto: UpdateTrackDto): TrackEntity {
     const value: TrackEntity = this._trackDatabase.get(id);
     if (value === undefined) {
       throw new NotFoundException();
     }
 
-    if (updateTrackDto.name !== undefined) {
-      value.name = updateTrackDto.name;
+    if (dto.name !== undefined) {
+      value.name = dto.name;
     }
-    if (updateTrackDto.artistId !== undefined) {
-      value.artistId = updateTrackDto.artistId;
+    if (dto.artistId !== undefined) {
+      value.artistId = dto.artistId;
     }
-    if (updateTrackDto.albumId !== undefined) {
-      value.albumId = updateTrackDto.albumId;
+    if (dto.albumId !== undefined) {
+      value.albumId = dto.albumId;
     }
-    if (updateTrackDto.duration !== undefined) {
-      value.duration = updateTrackDto.duration;
+    if (dto.duration !== undefined) {
+      value.duration = dto.duration;
     }
 
     this._trackDatabase.set(id, value);
     return value;
   }
 
-  deleteTrack(id: string) {
+  deleteTrack(id: string): void {
     const value: TrackEntity = this._trackDatabase.get(id);
     if (value === undefined) {
       throw new NotFoundException();
     }
 
     this._trackDatabase.delete(id);
+  }
+
+  deleteArtistId(artistId: string): void {
+    this._trackDatabase.forEach((value: TrackEntity, key: string) => {
+      if (value.artistId === artistId) {
+        value.artistId = artistId;
+        this._trackDatabase.set(key, value);
+      }
+    });
   }
 }

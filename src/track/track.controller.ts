@@ -25,7 +25,9 @@ export class TrackController {
   }
 
   @Get(':id')
-  getTrackById(@Param('id', new ParseUUIDPipe({ version: '4' })) id: string) {
+  getTrackById(
+    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+  ): TrackEntity {
     return this._trackService.getTrackById(id);
   }
 

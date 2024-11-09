@@ -22,11 +22,11 @@ export class UserService {
     return value;
   }
 
-  createUser(createUserDto: CreateUserDto): UserEntity {
+  createUser(dto: CreateUserDto): UserEntity {
     const user: UserEntity = new UserEntity({
       id: uuid(),
-      login: createUserDto.login,
-      password: createUserDto.password,
+      login: dto.login,
+      password: dto.password,
       version: 1,
       createdAt: new Date(),
       updatedAt: new Date(),
@@ -35,20 +35,17 @@ export class UserService {
     return user;
   }
 
-  updateUserPassword(
-    id: string,
-    updatePasswordDto: UpdatePasswordDto,
-  ): UserEntity {
+  updateUserPassword(id: string, dto: UpdatePasswordDto): UserEntity {
     const value: UserEntity = this._userDatabase.get(id);
     if (value === undefined) {
       throw new NotFoundException();
     }
 
-    if (value.password !== updatePasswordDto.oldPassword) {
+    if (value.password !== dto.oldPassword) {
       throw new ForbiddenException();
     }
 
-    value.changePassword(updatePasswordDto.newPassword);
+    value.changePassword(dto.newPassword);
     return value;
   }
 
