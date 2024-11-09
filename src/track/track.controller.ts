@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -14,6 +13,7 @@ import { TrackService } from './track.service';
 import TrackEntity from './entities/track.entity';
 import CreateTrackDto from './dtos/createTrack.dto';
 import UpdateTrackDto from './dtos/updateTrack.dto';
+import UUIDPipe from '../../pipes/uuid-validation.pipe';
 
 @Controller('track')
 export class TrackController {
@@ -25,9 +25,7 @@ export class TrackController {
   }
 
   @Get(':id')
-  getTrackById(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): TrackEntity {
+  getTrackById(@Param('id', UUIDPipe) id: string): TrackEntity {
     return this._trackService.getTrackById(id);
   }
 
@@ -38,7 +36,7 @@ export class TrackController {
 
   @Put(':id')
   updateTrack(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', UUIDPipe) id: string,
     @Body() updateTrackDto: UpdateTrackDto,
   ): TrackEntity {
     return this._trackService.updateTrack(id, updateTrackDto);
@@ -46,9 +44,7 @@ export class TrackController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteTrack(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): void {
+  deleteTrack(@Param('id', UUIDPipe) id: string): void {
     this._trackService.deleteTrack(id);
   }
 }

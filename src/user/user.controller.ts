@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -14,6 +13,7 @@ import { UserService } from './user.service';
 import CreateUserDto from './dtos/createUser.dto';
 import UpdatePasswordDto from './dtos/updatePassword.dto';
 import UserEntity from './entities/user.entity';
+import UUIDPipe from '../../pipes/uuid-validation.pipe';
 
 @Controller('user')
 export class UserController {
@@ -25,9 +25,7 @@ export class UserController {
   }
 
   @Get(':id')
-  getUserById(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): UserEntity {
+  getUserById(@Param('id', UUIDPipe) id: string): UserEntity {
     return this._userService.getUserById(id);
   }
 
@@ -38,7 +36,7 @@ export class UserController {
 
   @Put(':id')
   updatePassword(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', UUIDPipe) id: string,
     @Body() updatePasswordDto: UpdatePasswordDto,
   ): UserEntity {
     return this._userService.updateUserPassword(id, updatePasswordDto);
@@ -46,9 +44,7 @@ export class UserController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteUser(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): void {
+  deleteUser(@Param('id', UUIDPipe) id: string): void {
     this._userService.deleteUser(id);
   }
 }

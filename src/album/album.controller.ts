@@ -6,7 +6,6 @@ import {
   HttpCode,
   HttpStatus,
   Param,
-  ParseUUIDPipe,
   Post,
   Put,
 } from '@nestjs/common';
@@ -14,8 +13,8 @@ import { AlbumService } from './album.service';
 import CreateAlbumDto from './dtos/createAlbum.dto';
 import UpdateAlbumDto from './dtos/updateAlbum.dto';
 import AlbumEntity from './entities/album.entity';
+import UUIDPipe from '../../pipes/uuid-validation.pipe';
 
-// TODO: make UUID validation pipe global and into separate file
 @Controller('album')
 export class AlbumController {
   constructor(private readonly _albumService: AlbumService) {}
@@ -26,9 +25,7 @@ export class AlbumController {
   }
 
   @Get(':id')
-  getArtistById(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): AlbumEntity {
+  getArtistById(@Param('id', UUIDPipe) id: string): AlbumEntity {
     return this._albumService.getAlbumById(id);
   }
 
@@ -39,7 +36,7 @@ export class AlbumController {
 
   @Put(':id')
   updateArtist(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
+    @Param('id', UUIDPipe) id: string,
     @Body() updateAlbumDto: UpdateAlbumDto,
   ): AlbumEntity {
     return this._albumService.updateAlbum(id, updateAlbumDto);
@@ -47,9 +44,7 @@ export class AlbumController {
 
   @Delete(':id')
   @HttpCode(HttpStatus.NO_CONTENT)
-  deleteArtist(
-    @Param('id', new ParseUUIDPipe({ version: '4' })) id: string,
-  ): void {
+  deleteArtist(@Param('id', UUIDPipe) id: string): void {
     this._albumService.deleteAlbum(id);
   }
 }
