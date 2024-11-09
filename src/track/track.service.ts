@@ -9,6 +9,8 @@ export class TrackService {
   constructor(
     @Inject('TRACK_DB')
     private readonly _trackDatabase: Map<string, TrackEntity>,
+    @Inject('FAVS_TRACK_DB')
+    private readonly _favsTrackDatabase: Map<string, TrackEntity>,
   ) {}
 
   getAll(): TrackEntity[] {
@@ -67,15 +69,7 @@ export class TrackService {
       throw new NotFoundException();
     }
 
+    this._favsTrackDatabase.delete(id);
     this._trackDatabase.delete(id);
-  }
-
-  deleteArtistId(artistId: string): void {
-    this._trackDatabase.forEach((value: TrackEntity, key: string) => {
-      if (value.artistId === artistId) {
-        value.artistId = artistId;
-        this._trackDatabase.set(key, value);
-      }
-    });
   }
 }

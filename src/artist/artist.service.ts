@@ -15,6 +15,12 @@ export class ArtistService {
     private readonly _trackDatabase: Map<string, TrackEntity>,
     @Inject('ALBUM_DB')
     private readonly _albumDatabase: Map<string, AlbumEntity>,
+    @Inject('FAVS_ALBUM_DB')
+    private readonly _favsAlbumDatabase: Map<string, AlbumEntity>,
+    @Inject('FAVS_ARTIST_DB')
+    private readonly _favsArtistDatabase: Map<string, ArtistEntity>,
+    @Inject('FAVS_TRACK_DB')
+    private readonly _favsTrackDatabase: Map<string, TrackEntity>,
   ) {}
 
   getAll(): ArtistEntity[] {
@@ -72,6 +78,13 @@ export class ArtistService {
       }
     });
 
+    this._favsTrackDatabase.forEach((value: TrackEntity, key: string) => {
+      if (value.artistId === id) {
+        value.artistId = null;
+        this._trackDatabase.set(key, value);
+      }
+    });
+
     this._albumDatabase.forEach((value: AlbumEntity, key: string) => {
       if (value.artistId === id) {
         value.artistId = null;
@@ -79,6 +92,14 @@ export class ArtistService {
       }
     });
 
+    this._favsAlbumDatabase.forEach((value: AlbumEntity, key: string) => {
+      if (value.artistId === id) {
+        value.artistId = null;
+        this._albumDatabase.set(key, value);
+      }
+    });
+
+    this._favsArtistDatabase.delete(id);
     this._artistDatabase.delete(id);
   }
 }

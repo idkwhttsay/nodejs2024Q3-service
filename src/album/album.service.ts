@@ -12,6 +12,10 @@ export class AlbumService {
     private readonly _albumDatabase: Map<string, AlbumEntity>,
     @Inject('TRACK_DB')
     private readonly _trackDatabase: Map<string, TrackEntity>,
+    @Inject('FAVS_ALBUM_DB')
+    private readonly _favsAlbumDatabase: Map<string, AlbumEntity>,
+    @Inject('FAVS_TRACK_DB')
+    private readonly _favsTrackDatabase: Map<string, TrackEntity>,
   ) {}
 
   getAll(): AlbumEntity[] {
@@ -74,6 +78,14 @@ export class AlbumService {
       }
     });
 
+    this._favsTrackDatabase.forEach((value: TrackEntity, key: string) => {
+      if (value.albumId === id) {
+        value.albumId = null;
+        this._trackDatabase.set(key, value);
+      }
+    });
+
+    this._favsAlbumDatabase.delete(id);
     this._albumDatabase.delete(id);
   }
 }
