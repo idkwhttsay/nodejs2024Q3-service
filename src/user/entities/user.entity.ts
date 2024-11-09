@@ -1,4 +1,3 @@
-import { v4 as uuid } from 'uuid';
 import { Exclude, Transform } from 'class-transformer';
 import {
   IsDate,
