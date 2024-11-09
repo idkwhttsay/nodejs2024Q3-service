@@ -5,6 +5,7 @@ import {
   IsPositive,
   IsString,
   IsUUID,
+  Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -26,7 +27,7 @@ export default class CreateTrackDto {
 
   @IsNotEmpty()
   @IsInt()
-  @IsPositive()
+  @Min(0)
   @ApiProperty()
   duration: number; // integer number
 }
