@@ -4,7 +4,7 @@ import CreateArtistDto from './dtos/createArtist.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateArtistDto from './dtos/updateArtist.dto';
 import TrackEntity from '../track/entities/track.entity';
-import { TrackService } from '../track/track.service';
+import AlbumEntity from '../album/entities/album.entity';
 
 @Injectable()
 export class ArtistService {
@@ -13,6 +13,8 @@ export class ArtistService {
     private readonly _artistDatabase: Map<string, ArtistEntity>,
     @Inject('TRACK_DB')
     private readonly _trackDatabase: Map<string, TrackEntity>,
+    @Inject('ALBUM_DB')
+    private readonly _albumDatabase: Map<string, AlbumEntity>,
   ) {}
 
   getAll(): ArtistEntity[] {
@@ -57,7 +59,6 @@ export class ArtistService {
     return value;
   }
 
-  // TODO: delete artistID from tracks
   deleteArtist(id: string): void {
     const value: ArtistEntity = this._artistDatabase.get(id);
     if (value === undefined) {
@@ -68,6 +69,13 @@ export class ArtistService {
       if (value.artistId === id) {
         value.artistId = null;
         this._trackDatabase.set(key, value);
+      }
+    });
+
+    this._albumDatabase.forEach((value: AlbumEntity, key: string) => {
+      if (value.artistId === id) {
+        value.artistId = null;
+        this._albumDatabase.set(key, value);
       }
     });
 
