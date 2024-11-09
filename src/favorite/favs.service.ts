@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnprocessableEntityException,
+} from '@nestjs/common';
 import AlbumEntity from '../album/entities/album.entity';
 import TrackEntity from '../track/entities/track.entity';
 import ArtistEntity from '../artist/entities/artist.entity';
@@ -32,7 +37,7 @@ export class FavsService {
   addTrackToFavs(id: string): TrackEntity {
     const value: TrackEntity = this._trackDatabase.get(id);
     if (value === undefined) {
-      throw new NotFoundException();
+      throw new UnprocessableEntityException();
     }
 
     this._favsTrackDatabase.set(id, value);
@@ -42,7 +47,7 @@ export class FavsService {
   addAlbumToFavs(id: string): AlbumEntity {
     const value: AlbumEntity = this._albumDatabase.get(id);
     if (value === undefined) {
-      throw new NotFoundException();
+      throw new UnprocessableEntityException();
     }
 
     this._favsAlbumDatabase.set(id, value);
@@ -52,7 +57,7 @@ export class FavsService {
   addArtistToFavs(id: string): ArtistEntity {
     const value: ArtistEntity = this._artistDatabase.get(id);
     if (value === undefined) {
-      throw new NotFoundException();
+      throw new UnprocessableEntityException();
     }
 
     this._favsArtistDatabase.set(id, value);

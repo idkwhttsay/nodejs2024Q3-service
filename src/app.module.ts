@@ -16,7 +16,6 @@ const modules = [
 ];
 
 // TODO: add swagger (OpenAPI) docs
-// TODO: when deleting Artist, Track, Album -> delete from favs
 
 @Module({
   imports: [
