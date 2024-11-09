@@ -14,7 +14,7 @@ import CreateAlbumDto from './dtos/createAlbum.dto';
 import UpdateAlbumDto from './dtos/updateAlbum.dto';
 import AlbumEntity from './entities/album.entity';
 import UUIDPipe from '../../pipes/uuid-validation.pipe';
-import { ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
+import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('album')
 export class AlbumController {
@@ -51,6 +51,7 @@ export class AlbumController {
     status: 400,
     description: 'Does not contain required fields',
   })
+  @ApiBody({ type: CreateAlbumDto })
   @Post()
   createArtist(@Body() createAlbumDto: CreateAlbumDto): AlbumEntity {
     return this._albumService.createAlbum(createAlbumDto);
@@ -62,6 +63,7 @@ export class AlbumController {
     format: 'uuid',
     description: 'The ID of the album',
   })
+  @ApiBody({ type: UpdateAlbumDto })
   @ApiResponse({ status: 200, type: AlbumEntity })
   @ApiResponse({ status: 400, description: 'ID has invalid format' })
   @ApiResponse({ status: 404, description: 'Album not found' })

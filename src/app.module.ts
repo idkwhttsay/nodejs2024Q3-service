@@ -15,7 +15,7 @@ const modules = [
   UserModule,
 ];
 
-// TODO: add swagger (OpenAPI) docs
+// TODO: add examples and DTOs to swagger
 
 @Module({
   imports: [

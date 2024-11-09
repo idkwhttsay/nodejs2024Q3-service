@@ -14,7 +14,13 @@ import CreateUserDto from './dtos/createUser.dto';
 import UpdatePasswordDto from './dtos/updatePassword.dto';
 import UserEntity from './entities/user.entity';
 import UUIDPipe from '../../pipes/uuid-validation.pipe';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('user')
 @ApiTags('Users')
@@ -60,6 +66,7 @@ export class UserController {
     description: 'The user has been created.',
     type: UserEntity,
   })
+  @ApiBody({ type: CreateUserDto })
   @ApiResponse({
     status: 400,
     description: 'Does not contain required fields',
@@ -75,6 +82,7 @@ export class UserController {
     format: 'uuid',
     description: 'The ID of the user',
   })
+  @ApiBody({ type: UpdatePasswordDto })
   @ApiResponse({ status: 200, type: UserEntity })
   @ApiResponse({ status: 400, description: 'ID has invalid format' })
   @ApiResponse({ status: 404, description: 'User not found' })

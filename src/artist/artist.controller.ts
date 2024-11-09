@@ -14,7 +14,13 @@ import ArtistEntity from './entities/artist.entity';
 import CreateArtistDto from './dtos/createArtist.dto';
 import UpdateArtistDto from './dtos/updateArtist.dto';
 import UUIDPipe from '../../pipes/uuid-validation.pipe';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('artist')
 @ApiTags('Artists')
@@ -44,6 +50,7 @@ export class ArtistController {
 
   @Post()
   @ApiOperation({ summary: 'Create artist' })
+  @ApiBody({ type: CreateArtistDto })
   @ApiResponse({
     status: 201,
     description: 'The artist has been created.',
@@ -63,6 +70,7 @@ export class ArtistController {
     format: 'uuid',
     description: 'The ID of the artist',
   })
+  @ApiBody({ type: UpdateArtistDto })
   @ApiResponse({ status: 200, type: ArtistEntity })
   @ApiResponse({ status: 400, description: 'ID has invalid format' })
   @ApiResponse({ status: 404, description: 'Artist not found' })

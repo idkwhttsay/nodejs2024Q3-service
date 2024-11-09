@@ -14,7 +14,13 @@ import TrackEntity from './entities/track.entity';
 import CreateTrackDto from './dtos/createTrack.dto';
 import UpdateTrackDto from './dtos/updateTrack.dto';
 import UUIDPipe from '../../pipes/uuid-validation.pipe';
-import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiOperation,
+  ApiParam,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @Controller('track')
 @ApiTags('Tracks')
@@ -43,6 +49,7 @@ export class TrackController {
   }
 
   @ApiOperation({ summary: 'Create track' })
+  @ApiBody({ type: CreateTrackDto })
   @ApiResponse({
     status: 201,
     description: 'The track has been created.',
@@ -63,6 +70,7 @@ export class TrackController {
     format: 'uuid',
     description: 'The ID of the track',
   })
+  @ApiBody({ type: UpdateTrackDto })
   @ApiResponse({ status: 200, type: TrackEntity })
   @ApiResponse({ status: 400, description: 'ID has invalid format' })
   @ApiResponse({ status: 404, description: 'Track not found' })
