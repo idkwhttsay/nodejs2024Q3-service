@@ -24,11 +24,29 @@ const albumDatabaseProvider = {
   useValue: new Map<string, AlbumEntity>(),
 };
 
+const FavsAlbumDatabaseProvider = {
+  provide: 'FAVS_ALBUM_DB',
+  useValue: new Map<string, AlbumEntity>(),
+};
+
+const FavsArtistDatabaseProvider = {
+  provide: 'FAVS_ARTIST_DB',
+  useValue: new Map<string, ArtistEntity>(),
+};
+
+const FavsTrackDatabaseProvider = {
+  provide: 'FAVS_TRACK_DB',
+  useValue: new Map<string, TrackEntity>(),
+};
+
 const providers = [
   trackDatabaseProvider,
   userDatabaseProvider,
   artistDatabaseProvider,
   albumDatabaseProvider,
+  FavsAlbumDatabaseProvider,
+  FavsArtistDatabaseProvider,
+  FavsTrackDatabaseProvider,
 ];
 
 @Module({
