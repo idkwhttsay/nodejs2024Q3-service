@@ -1,13 +1,19 @@
 import UserEntity from './entities/user.entity';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import CreateUserDto from './dtos/createUser.dto';
 import UpdatePasswordDto from './dtos/updatePassword.dto';
 
+@Injectable()
 export class UserService {
-  constructor(protected _userDatabase: Map<string, UserEntity>) {
-    this._userDatabase = new Map<string, UserEntity>();
-  }
+  constructor(
+    @Inject('USER_DB') private readonly _userDatabase: Map<string, UserEntity>,
+  ) {}
 
   getAll(): UserEntity[] {
     return Array.from(this._userDatabase.values());

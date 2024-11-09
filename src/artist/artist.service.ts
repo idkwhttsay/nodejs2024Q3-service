@@ -1,13 +1,15 @@
 import ArtistEntity from './entities/artist.entity';
-import { NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import CreateArtistDto from './dtos/createArtist.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateArtistDto from './dtos/updateArtist.dto';
 
+@Injectable()
 export class ArtistService {
-  constructor(private readonly _artistDatabase: Map<string, ArtistEntity>) {
-    this._artistDatabase = new Map<string, ArtistEntity>();
-  }
+  constructor(
+    @Inject('ARTIST_DB')
+    private readonly _artistDatabase: Map<string, ArtistEntity>,
+  ) {}
 
   getAll(): ArtistEntity[] {
     return Array.from(this._artistDatabase.values());

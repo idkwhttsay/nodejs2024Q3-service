@@ -1,13 +1,15 @@
 import TrackEntity from './entities/track.entity';
-import { NotFoundException } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import CreateTrackDto from './dtos/createTrack.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateTrackDto from './dtos/updateTrack.dto';
 
+@Injectable()
 export class TrackService {
-  constructor(private readonly _trackDatabase: Map<string, TrackEntity>) {
-    this._trackDatabase = new Map<string, TrackEntity>();
-  }
+  constructor(
+    @Inject('TRACK_DB')
+    private readonly _trackDatabase: Map<string, TrackEntity>,
+  ) {}
 
   getAll(): TrackEntity[] {
     return Array.from(this._trackDatabase.values());
