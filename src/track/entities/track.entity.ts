@@ -2,9 +2,9 @@ import {
   IsInt,
   IsNotEmpty,
   IsOptional,
-  IsPositive,
   IsString,
   IsUUID,
+  Min,
 } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -31,7 +31,7 @@ export default class TrackEntity {
 
   @IsNotEmpty()
   @IsInt()
-  @IsPositive()
+  @Min(0)
   @ApiProperty({ minimum: 1 })
   duration: number; // integer number
 
