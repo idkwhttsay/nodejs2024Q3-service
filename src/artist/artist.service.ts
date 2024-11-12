@@ -5,12 +5,14 @@ import { v4 as uuid } from 'uuid';
 import UpdateArtistDto from './dtos/updateArtist.dto';
 import TrackEntity from '../track/entities/track.entity';
 import AlbumEntity from '../album/entities/album.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class ArtistService {
   constructor(
-    @Inject('ARTIST_DB')
-    private readonly _artistDatabase: Map<string, ArtistEntity>,
+    @InjectRepository(ArtistEntity)
+    private readonly _artistRepository: Repository<ArtistEntity>,
     @Inject('TRACK_DB')
     private readonly _trackDatabase: Map<string, TrackEntity>,
     @Inject('ALBUM_DB')
@@ -23,33 +25,32 @@ export class ArtistService {
     private readonly _favsTrackDatabase: Map<string, TrackEntity>,
   ) {}
 
-  getAll(): ArtistEntity[] {
-    return Array.from(this._artistDatabase.values());
+  async getAll(): Promise<ArtistEntity[]> {
+    return await this._artistRepository.find();
   }
 
-  getArtistById(id: string): ArtistEntity {
-    const value: ArtistEntity = this._artistDatabase.get(id);
-    if (value === undefined) {
+  async getArtistById(id: string): Promise<ArtistEntity> {
+    const value: ArtistEntity = await this._artistRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
     return value;
   }
 
-  createArtist(dto: CreateArtistDto): ArtistEntity {
+  async createArtist(dto: CreateArtistDto): Promise<ArtistEntity> {
     const artist: ArtistEntity = new ArtistEntity({
       id: uuid(),
       name: dto.name,
       grammy: dto.grammy,
     });
 
-    this._artistDatabase.set(artist.id, artist);
-    return artist;
+    return await this._artistRepository.save(artist);
   }
 
-  updateArtist(id: string, dto: UpdateArtistDto): ArtistEntity {
-    const value: ArtistEntity = this._artistDatabase.get(id);
-    if (value === undefined) {
+  async updateArtist(id: string, dto: UpdateArtistDto): Promise<ArtistEntity> {
+    const value: ArtistEntity = await this._artistRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
@@ -61,13 +62,12 @@ export class ArtistService {
       value.grammy = dto.grammy;
     }
 
-    this._artistDatabase.set(id, value);
-    return value;
+    return await this._artistRepository.save(value);
   }
 
-  deleteArtist(id: string): void {
-    const value: ArtistEntity = this._artistDatabase.get(id);
-    if (value === undefined) {
+  async deleteArtist(id: string): Promise<void> {
+    const value: ArtistEntity = await this._artistRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
@@ -100,6 +100,6 @@ export class ArtistService {
     });
 
     this._favsArtistDatabase.delete(id);
-    this._artistDatabase.delete(id);
+    await this._artistRepository.remove(value);
   }
 }
