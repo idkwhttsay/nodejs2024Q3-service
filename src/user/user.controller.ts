@@ -13,7 +13,7 @@ import { UserService } from './user.service';
 import CreateUserDto from './dtos/createUser.dto';
 import UpdatePasswordDto from './dtos/updatePassword.dto';
 import UserEntity from './entities/user.entity';
-import UUIDPipe from '../../pipes/uuid-validation.pipe';
+import UUIDPipe from '../../infrastructure/pipes/uuid-validation.pipe';
 import {
   ApiBody,
   ApiOperation,

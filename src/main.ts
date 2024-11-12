@@ -1,15 +1,25 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { ValidationPipe } from '@nestjs/common';
-import { enableSwagger } from './swagger';
+import { ConfigService } from '@nestjs/config';
+import { IConfiguration } from '../infrastructure/configurations/configuration.interface';
+import { Environment } from '../infrastructure/configurations/environment';
+import { Swagger } from '../infrastructure/documentation/swagger';
 
 async function bootstrap() {
-  const PORT: number = Number.parseInt(process.env.PORT) | 4000;
   const app = await NestFactory.create(AppModule);
-  enableSwagger(app);
+  const configService = app.get<ConfigService<IConfiguration>>(ConfigService);
+  const environment = app.get<Environment>(Environment);
+  const PORT: number = configService.get<number>('PORT') | 4000;
+
+  if (!environment.isProduction()) {
+    const swagger = new Swagger(app, configService, environment);
+    await swagger.setup();
+  }
+
   app.useGlobalPipes(new ValidationPipe({ whitelist: true }));
   await app.listen(PORT).then(() => {
-    console.log('app is listening on http://localhost:4000');
+    console.log(`app is listening on http://localhost:${PORT}`);
   });
 }
 

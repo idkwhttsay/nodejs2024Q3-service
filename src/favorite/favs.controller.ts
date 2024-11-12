@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { FavsService } from './favs.service';
 import FavsEntity from './entities/favs.entity';
-import UUIDPipe from '../../pipes/uuid-validation.pipe';
+import UUIDPipe from '../../infrastructure/pipes/uuid-validation.pipe';
 import { ApiOperation, ApiParam, ApiResponse, ApiTags } from '@nestjs/swagger';
 
 @Controller('favs')

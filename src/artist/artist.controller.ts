@@ -13,7 +13,7 @@ import { ArtistService } from './artist.service';
 import ArtistEntity from './entities/artist.entity';
 import CreateArtistDto from './dtos/createArtist.dto';
 import UpdateArtistDto from './dtos/updateArtist.dto';
-import UUIDPipe from '../../pipes/uuid-validation.pipe';
+import UUIDPipe from '../../infrastructure/pipes/uuid-validation.pipe';
 import {
   ApiBody,
   ApiOperation,

@@ -13,7 +13,7 @@ import { TrackService } from './track.service';
 import TrackEntity from './entities/track.entity';
 import CreateTrackDto from './dtos/createTrack.dto';
 import UpdateTrackDto from './dtos/updateTrack.dto';
-import UUIDPipe from '../../pipes/uuid-validation.pipe';
+import UUIDPipe from '../../infrastructure/pipes/uuid-validation.pipe';
 import {
   ApiBody,
   ApiOperation,

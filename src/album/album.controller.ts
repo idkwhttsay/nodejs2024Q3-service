@@ -13,7 +13,7 @@ import { AlbumService } from './album.service';
 import CreateAlbumDto from './dtos/createAlbum.dto';
 import UpdateAlbumDto from './dtos/updateAlbum.dto';
 import AlbumEntity from './entities/album.entity';
-import UUIDPipe from '../../pipes/uuid-validation.pipe';
+import UUIDPipe from '../../infrastructure/pipes/uuid-validation.pipe';
 import { ApiBody, ApiOperation, ApiParam, ApiResponse } from '@nestjs/swagger';
 
 @Controller('album')
