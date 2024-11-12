@@ -8,7 +8,10 @@ import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EnvironmentModule } from '../infrastructure/configurations/environment.module';
 import { ConfigModule } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import typeormConfig from '../infrastructure/database/typeorm.config';
+import { config } from 'dotenv';
+import typeORMConfig from '../infrastructure/database/typeorm.config';
+
+config();
 
 const domainModules = [
   TrackModule,
@@ -21,7 +24,16 @@ const domainModules = [
 const infrastructureModules = [
   EnvironmentModule,
   ConfigModule.forRoot({ isGlobal: true }),
-  TypeOrmModule.forRoot(typeormConfig),
+  TypeOrmModule.forRoot({
+    type: 'postgres',
+    host: process.env.POSTGRES_HOST,
+    port: parseInt(process.env.POSTGRES_PORT),
+    username: process.env.POSTGRES_USER,
+    password: process.env.POSTGRES_PASSWORD,
+    database: process.env.POSTGRES_DB,
+    synchronize: process.env.NODE_ENV === 'Development',
+    autoLoadEntities: true,
+  }),
 ];
 
 @Module({
