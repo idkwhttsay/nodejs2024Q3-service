@@ -1,5 +1,5 @@
 import ArtistEntity from './entities/artist.entity';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import CreateArtistDto from './dtos/createArtist.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateArtistDto from './dtos/updateArtist.dto';
@@ -7,22 +7,19 @@ import TrackEntity from '../track/entities/track.entity';
 import AlbumEntity from '../album/entities/album.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import FavsArtistEntity from '../favorite/entities/favs-artist.entity';
 
 @Injectable()
 export class ArtistService {
   constructor(
     @InjectRepository(ArtistEntity)
     private readonly _artistRepository: Repository<ArtistEntity>,
-    @Inject('TRACK_DB')
-    private readonly _trackDatabase: Map<string, TrackEntity>,
-    @Inject('ALBUM_DB')
-    private readonly _albumDatabase: Map<string, AlbumEntity>,
-    @Inject('FAVS_ALBUM_DB')
-    private readonly _favsAlbumDatabase: Map<string, AlbumEntity>,
-    @Inject('FAVS_ARTIST_DB')
-    private readonly _favsArtistDatabase: Map<string, ArtistEntity>,
-    @Inject('FAVS_TRACK_DB')
-    private readonly _favsTrackDatabase: Map<string, TrackEntity>,
+    @InjectRepository(TrackEntity)
+    private readonly _trackRepository: Repository<TrackEntity>,
+    @InjectRepository(AlbumEntity)
+    private readonly _albumRepository: Repository<AlbumEntity>,
+    @InjectRepository(FavsArtistEntity)
+    private readonly _favsArtistRepository: Repository<FavsArtistEntity>,
   ) {}
 
   async getAll(): Promise<ArtistEntity[]> {
@@ -71,35 +68,9 @@ export class ArtistService {
       throw new NotFoundException();
     }
 
-    this._trackDatabase.forEach((value: TrackEntity, key: string) => {
-      if (value.artistId === id) {
-        value.artistId = null;
-        this._trackDatabase.set(key, value);
-      }
-    });
-
-    this._favsTrackDatabase.forEach((value: TrackEntity, key: string) => {
-      if (value.artistId === id) {
-        value.artistId = null;
-        this._trackDatabase.set(key, value);
-      }
-    });
-
-    this._albumDatabase.forEach((value: AlbumEntity, key: string) => {
-      if (value.artistId === id) {
-        value.artistId = null;
-        this._albumDatabase.set(key, value);
-      }
-    });
-
-    this._favsAlbumDatabase.forEach((value: AlbumEntity, key: string) => {
-      if (value.artistId === id) {
-        value.artistId = null;
-        this._albumDatabase.set(key, value);
-      }
-    });
-
-    this._favsArtistDatabase.delete(id);
+    await this._favsArtistRepository.remove({ id: value.id });
+    await this._trackRepository.update({ artistId: id }, { artistId: null });
+    await this._albumRepository.update({ artistId: id }, { artistId: null });
     await this._artistRepository.remove(value);
   }
 }

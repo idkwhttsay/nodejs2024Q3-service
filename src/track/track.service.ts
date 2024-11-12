@@ -1,18 +1,19 @@
 import TrackEntity from './entities/track.entity';
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import CreateTrackDto from './dtos/createTrack.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateTrackDto from './dtos/updateTrack.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
+import FavsTrackEntity from '../favorite/entities/favs-track.entity';
 
 @Injectable()
 export class TrackService {
   constructor(
     @InjectRepository(TrackEntity)
     private readonly _trackRepository: Repository<TrackEntity>,
-    @Inject('FAVS_TRACK_DB')
-    private readonly _favsTrackDatabase: Map<string, TrackEntity>,
+    @InjectRepository(FavsTrackEntity)
+    private readonly _favsTrackRepository: Repository<FavsTrackEntity>,
   ) {}
 
   async getAll(): Promise<TrackEntity[]> {
@@ -21,7 +22,7 @@ export class TrackService {
 
   async getTrackById(id: string): Promise<TrackEntity> {
     const value: TrackEntity = await this._trackRepository.findOneBy({ id });
-    if (value === undefined) {
+    if (value === null) {
       throw new NotFoundException();
     }
 
@@ -42,7 +43,7 @@ export class TrackService {
 
   async updateTrack(id: string, dto: UpdateTrackDto): Promise<TrackEntity> {
     const value: TrackEntity = await this._trackRepository.findOneBy({ id });
-    if (value === undefined) {
+    if (value === null) {
       throw new NotFoundException();
     }
 
@@ -64,11 +65,11 @@ export class TrackService {
 
   async deleteTrack(id: string): Promise<void> {
     const value: TrackEntity = await this._trackRepository.findOneBy({ id });
-    if (value === undefined) {
+    if (value === null) {
       throw new NotFoundException();
     }
 
-    this._favsTrackDatabase.delete(id);
+    await this._favsTrackRepository.remove({ id: value.id });
     await this._trackRepository.remove(value);
   }
 }
