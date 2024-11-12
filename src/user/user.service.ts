@@ -1,34 +1,36 @@
 import UserEntity from './entities/user.entity';
 import {
   ForbiddenException,
-  Inject,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
 import { v4 as uuid } from 'uuid';
 import CreateUserDto from './dtos/createUser.dto';
 import UpdatePasswordDto from './dtos/updatePassword.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class UserService {
   constructor(
-    @Inject('USER_DB') private readonly _userDatabase: Map<string, UserEntity>,
+    @InjectRepository(UserEntity)
+    private readonly _userRepository: Repository<UserEntity>,
   ) {}
 
-  getAll(): UserEntity[] {
-    return Array.from(this._userDatabase.values());
+  async getAll(): Promise<UserEntity[]> {
+    return await this._userRepository.find();
   }
 
-  getUserById(id: string): UserEntity {
-    const value: UserEntity = this._userDatabase.get(id);
-    if (value === undefined) {
+  async getUserById(id: string): Promise<UserEntity> {
+    const user: UserEntity = await this._userRepository.findOneBy({ id });
+    if (user === null) {
       throw new NotFoundException();
     }
 
-    return value;
+    return user;
   }
 
-  createUser(dto: CreateUserDto): UserEntity {
+  async createUser(dto: CreateUserDto): Promise<UserEntity> {
     const user: UserEntity = new UserEntity({
       id: uuid(),
       login: dto.login,
@@ -37,13 +39,16 @@ export class UserService {
       createdAt: new Date(),
       updatedAt: new Date(),
     });
-    this._userDatabase.set(user.id, user);
-    return user;
+
+    return await this._userRepository.save(user);
   }
 
-  updateUserPassword(id: string, dto: UpdatePasswordDto): UserEntity {
-    const value: UserEntity = this._userDatabase.get(id);
-    if (value === undefined) {
+  async updateUserPassword(
+    id: string,
+    dto: UpdatePasswordDto,
+  ): Promise<UserEntity> {
+    const value: UserEntity = await this._userRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
@@ -52,15 +57,15 @@ export class UserService {
     }
 
     value.changePassword(dto.newPassword);
-    return value;
+    return await this._userRepository.save(value);
   }
 
-  deleteUser(id: string): void {
-    const value: UserEntity = this._userDatabase.get(id);
-    if (value === undefined) {
+  async deleteUser(id: string): Promise<void> {
+    const value: UserEntity = await this._userRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
-    this._userDatabase.delete(id);
+    await this._userRepository.remove(value);
   }
 }

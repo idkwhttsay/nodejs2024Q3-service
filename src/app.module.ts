@@ -7,6 +7,8 @@ import { AlbumModule } from './album/album.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { EnvironmentModule } from '../infrastructure/configurations/environment.module';
 import { ConfigModule } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import typeormConfig from '../infrastructure/database/typeorm.config';
 
 const domainModules = [
   TrackModule,
@@ -19,6 +21,7 @@ const domainModules = [
 const infrastructureModules = [
   EnvironmentModule,
   ConfigModule.forRoot({ isGlobal: true }),
+  TypeOrmModule.forRoot(typeormConfig),
 ];
 
 @Module({
