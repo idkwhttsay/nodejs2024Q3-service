@@ -4,12 +4,14 @@ import CreateAlbumDto from './dtos/createAlbum.dto';
 import { v4 as uuid } from 'uuid';
 import UpdateAlbumDto from './dtos/updateAlbum.dto';
 import TrackEntity from '../track/entities/track.entity';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 
 @Injectable()
 export class AlbumService {
   constructor(
-    @Inject('ALBUM_DB')
-    private readonly _albumDatabase: Map<string, AlbumEntity>,
+    @InjectRepository(AlbumEntity)
+    private readonly _albumRepository: Repository<AlbumEntity>,
     @Inject('TRACK_DB')
     private readonly _trackDatabase: Map<string, TrackEntity>,
     @Inject('FAVS_ALBUM_DB')
@@ -18,20 +20,20 @@ export class AlbumService {
     private readonly _favsTrackDatabase: Map<string, TrackEntity>,
   ) {}
 
-  getAll(): AlbumEntity[] {
-    return Array.from(this._albumDatabase.values());
+  async getAll(): Promise<AlbumEntity[]> {
+    return await this._albumRepository.find();
   }
 
-  getAlbumById(id: string) {
-    const value: AlbumEntity = this._albumDatabase.get(id);
-    if (value === undefined) {
+  async getAlbumById(id: string): Promise<AlbumEntity> {
+    const value: AlbumEntity = await this._albumRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
     return value;
   }
 
-  createAlbum(dto: CreateAlbumDto) {
+  async createAlbum(dto: CreateAlbumDto): Promise<AlbumEntity> {
     const album: AlbumEntity = new AlbumEntity({
       id: uuid(),
       name: dto.name,
@@ -39,13 +41,12 @@ export class AlbumService {
       year: dto.year,
     });
 
-    this._albumDatabase.set(album.id, album);
-    return album;
+    return await this._albumRepository.save(album);
   }
 
-  updateAlbum(id: string, dto: UpdateAlbumDto) {
-    const value: AlbumEntity = this._albumDatabase.get(id);
-    if (value === undefined) {
+  async updateAlbum(id: string, dto: UpdateAlbumDto): Promise<AlbumEntity> {
+    const value: AlbumEntity = await this._albumRepository.findOneBy({ id });
+    if (value === null) {
       throw new NotFoundException();
     }
 
@@ -61,12 +62,11 @@ export class AlbumService {
       value.artistId = dto.artistId;
     }
 
-    this._albumDatabase.set(id, value);
-    return value;
+    return await this._albumRepository.save(value);
   }
 
-  deleteAlbum(id: string) {
-    const value: AlbumEntity = this._albumDatabase.get(id);
+  async deleteAlbum(id: string): Promise<void> {
+    const value: AlbumEntity = await this._albumRepository.findOneBy({ id });
     if (value === undefined) {
       throw new NotFoundException();
     }
@@ -86,6 +86,6 @@ export class AlbumService {
     });
 
     this._favsAlbumDatabase.delete(id);
-    this._albumDatabase.delete(id);
+    await this._albumRepository.remove(value);
   }
 }
