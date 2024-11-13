@@ -12,7 +12,7 @@
     "start": "nest start",
     "start:dev": "nest start --watch",
     "start:debug": "nest start --debug --watch",
-    "start:prod": "node dist/main",
+    "start:prod": "NODE_ENV=production npm run typeorm:migrate && node dist/src/main",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "test": "jest --testMatch \"<rootDir>/*.spec.ts\" --noStackTrace --runInBand",
     "test:auth": "cross-env TEST_MODE=auth jest --testPathIgnorePatterns refresh.e2e.spec.ts --noStackTrace --runInBand",
@@ -23,7 +23,8 @@
     "typeorm:dev": "ts-node ./node_modules/typeorm/cli.js -d infrastructure/database/migration.config.ts",
     "typeorm:prod": "node node_modules/typeorm/cli.js -d dist/infrastructure/database/migration.config.js",
     "typeorm:migrate": "npm run typeorm:prod -- migration:run",
-    "typeorm:generate": "npm run typeorm:dev -- migration:generate"
+    "typeorm:generate": "npm run typeorm:dev -- migration:generate",
+    "docker:scout": "docker scout cves d4ntatar/homelibraryservice_app && docker scout cves d4ntatar/homelibraryservice_db"
   },
   "dependencies": {
     "@nestjs/common": "^10.4.7",
@@ -33,7 +34,7 @@
     "@nestjs/mapped-types": "^2.0.6",
     "@nestjs/platform-express": "^10.4.7",
     "@nestjs/typeorm": "^10.0.2",
-    "bcrypt": "^5.0.1",
+    "bcrypt": "^5.1.0",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "dotenv": "^16.0.1",
