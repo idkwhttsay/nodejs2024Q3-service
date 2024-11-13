@@ -17,8 +17,6 @@ import {
   VersionColumn,
 } from 'typeorm';
 
-// TODO: add @BeforeInsert() generateUuid() ...
-
 @Entity({ name: 'users' })
 export default class UserEntity {
   @PrimaryGeneratedColumn('uuid')
