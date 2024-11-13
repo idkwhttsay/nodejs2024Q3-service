@@ -1,4 +1,4 @@
-# Home Library Service
+# Home Library Service REST API
 
 ## Prerequisites
 
@@ -7,21 +7,12 @@
 
 ## 1. Downloading
 
-```
-git clone https://github.com/idkwhttsay/nodejs2024Q3-service.git
-```
+1. ```git clone https://github.com/idkwhttsay/nodejs2024Q3-service.git``` - clone the repository
+2. ```git checkout typeORM-Docker``` - go to branch typeORM-Docker
+3. ```npm install``` - install npm packages
+4. ```cp .env.example .env``` - create a .env file based on the .env.example
 
-```
-git checkout typeORM-Docker
-```
-
-## 2. Installing NPM modules
-
-```
-npm install
-```
-
-## 3. Running application using Docker
+## 2. Running application using Docker
 Make sure you have Docker app installed on your computer. 
 After that, type in following commands into your console one by one:
 1. ```docker-compose up```
@@ -34,7 +25,7 @@ You can easily scan built images of this program for vulnerabilities by typing f
 2. ```docker scout cves d4ntatar/homelibraryservice_app``` - to scan image of the app
 3. ```docker scout cves d4ntatar/homelibraryservice_db``` - to scan image of the database
 
-## 4. Running application without Docker
+## 3. Running application without Docker
 Make sure you have PostgreSQL (or any other database provider app installed) app installed on your computer.
 Start the server with the following properties:
 ```
@@ -47,13 +38,13 @@ POSTGRES_PASSWORD=home_music_library
 
 After that, run ```npm run start:prod```. This command will build the program, migrate the database, and start the build.
 
-## 5. Migrating the database
+## 4. Migrating the database
 
 1. ```npm run typeorm:generate -- <link-to-save-migration>``` - to generate a migration
 2. ```npm run typeorm:migrate``` - to run migration, so the database will be created on your computer 
 (requires PostgreSQL)
 
-## 6. Running application
+## 5. Running application
 
 1. ```npm run start``` - to run application in "development" mode
 2. ```npm run start:dev``` - to run application in "development" mode
