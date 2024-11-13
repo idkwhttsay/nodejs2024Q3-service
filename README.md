@@ -5,26 +5,62 @@
 - Git - [Download & Install Git](https://git-scm.com/downloads).
 - Node.js - [Download & Install Node.js](https://nodejs.org/en/download/) and the npm package manager.
 
-## Downloading
+## 1. Downloading
 
 ```
 git clone https://github.com/idkwhttsay/nodejs2024Q3-service.git
 ```
 
-## Installing NPM modules
+```
+git checkout typeORM-Docker
+```
+
+## 2. Installing NPM modules
 
 ```
 npm install
 ```
 
-## Running application
+## 3. Running application using Docker
+Make sure you have Docker app installed on your computer. 
+After that, type in following commands into your console one by one:
+1. ```docker-compose up```
+2. Open new terminal window and run tests with ```npm run test```
+3. To exit from the container, terminate the terminal and run ```docker-compose down```
 
+### Docker Scout
+You can easily scan built images of this program for vulnerabilities by typing following into console:
+1. ```npm run docker:scout``` - to scan images of both database and app.
+2. ```docker scout cves d4ntatar/homelibraryservice_app``` - to scan image of the app
+3. ```docker scout cves d4ntatar/homelibraryservice_db``` - to scan image of the database
+
+## 4. Running application without Docker
+Make sure you have PostgreSQL (or any other database provider app installed) app installed on your computer.
+Start the server with the following properties:
 ```
-npm start
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=home_music_library
+POSTGRES_USER=home_music_library
+POSTGRES_PASSWORD=home_music_library
 ```
+
+After that, run ```npm run start:prod```. This command will build the program, migrate the database, and start the build.
+
+## 5. Migrating the database
+
+1. ```npm run typeorm:generate -- <link-to-save-migration>``` - to generate a migration
+2. ```npm run typeorm:migrate``` - to run migration, so the database will be created on your computer 
+(requires PostgreSQL)
+
+## 6. Running application
+
+1. ```npm run start``` - to run application in "development" mode
+2. ```npm run start:dev``` - to run application in "development" mode
+3. ```npm run start:prod``` - to run application in "production" mode
 
 After starting the app on port (4000 as default) you can open
-in your browser OpenAPI documentation by typing http://localhost:4000/doc/.
+in your browser OpenAPI documentation by typing http://localhost:4000/api/docs.
 For more information about OpenAPI/Swagger please visit https://swagger.io/.
 
 ## Testing
@@ -43,7 +79,7 @@ To run only one of all test suites
 npm run test -- <path to suite>
 ```
 
-To run all test with authorization
+To run all tests with authorization
 
 ```
 npm run test:auth
